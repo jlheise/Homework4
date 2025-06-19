@@ -1,0 +1,32 @@
+---
+title: "Homework4"
+author: "Jessie Heise"
+format: pdf
+editor: visual
+---
+
+## Task 1: Conceptual Questions
+
+### Question 1
+
+The purpose of the lapply() function is to apply a function to every element of a list. The equivalent purrr function is map().
+
+### Question 2
+
+lapply(x = my_list, FUN = cor(numeric_matrix), method = "kendall")
+
+### Question 3
+
+One advantage of using purrr functions instead of the BaseR apply family is that purrr functions provide a more consistent and clean way to apply functions to objects. Another advantage is that purrr functions allow for shorthand and have additional helper functions.
+
+### Question 4
+
+A side-effect function is a type of pipeable function that doesn't actually try to change the data, it just tries to produce something. The print() and plot() functions are examples of side-effect functions.
+
+### Question 5
+
+You can name a variable sd in a function and not cause any issues with the sd function because of lexical scoping. Lexical scoping is how R looks up where to get the object from.
+
+## Task 2: Writing R Functions
+
+### Question 1
