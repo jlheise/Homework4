@@ -102,7 +102,8 @@ testMAE3 <- getMAE(resp2,pred)
 ### Question 5
 
 ```{r}
-#Create a wrapper function to get either or both metrics returned with a single function call
+#Create a wrapper function to get either or both metrics returned with a 
+#single function call
 wrapper <- function(vector1,vector2,RMSE=TRUE,MAE=TRUE,...){
   if(is.vector(vector1)==FALSE | is.vector(vector2)==FALSE){
     stop("One or more inputs are not in vector form")
@@ -160,7 +161,7 @@ testwrapper5 <- wrapper(resp2,pred)
 bad_data_1 <- c(1,2,3)
 bad_data_2 <- c(4,5,6)
 bad_data_frame <- data.frame(bad_data_1,bad_data_2)
-testwrapper6 <- wrapper(bad_data_frame,bad_data_2)
+#testwrapper6 <- wrapper(bad_data_frame,bad_data_2) #commented out due to error
 ```
 
 ## Task 3: Querying an API and a Tidy-Style Function
@@ -168,7 +169,8 @@ testwrapper6 <- wrapper(bad_data_frame,bad_data_2)
 ### Question 1
 
 ```{r}
-#Use GET() from the httr package to return information about protests in the news in the last 30 days.
+#Use GET() from the httr package to return information about protests in the 
+#news in the last 30 days.
 news_URL_protests <- "https://newsapi.org/v2/everything?q=protests&from=2025-05-19&sortBy=publishedAt&apiKey=24187cd558dc45b9a6b10d1891bdd396"
 news_protests_return <- httr::GET(news_URL_protests)
 ```
@@ -176,7 +178,8 @@ news_protests_return <- httr::GET(news_URL_protests)
 ### Question 2
 
 ```{r}
-#Parse what is returned in question 1 and find the data frame that has the actual article information
+#Parse what is returned in question 1 and find the data frame that has the 
+#actual article information
 parsed_news_protests <- jsonlite::fromJSON(rawToChar(news_protests_return$content))
 protests <- as_tibble(parsed_news_protests)
 ```
@@ -184,10 +187,13 @@ protests <- as_tibble(parsed_news_protests)
 ### Question 3
 
 ```{r}
-#Write a quick function that allows the user to easily query this API. The inputs to the function should be the title/subject to search for (string), a time period to search from (string), and an API key
+#Write a quick function that allows the user to easily query this API. 
+#The inputs to the function should be the title/subject to search for 
+#(string), a time period to search from (string), and an API key
 API_query <- function(subject,time_period,key){
   news_URL <- "https://newsapi.org/v2/everything?q="
-  query_URL <- paste0(news_URL,subject,"&from=",time_period,"&sortBy=publishedAt&apiKey=",key)
+  query_URL <- paste0(news_URL,subject,"&from=",time_period,
+                      "&sortBy=publishedAt&apiKey=",key)
   news_return <- httr::GET(query_URL)
   parsed_news <- jsonlite::fromJSON(rawToChar(news_return$content))
   news <- as_tibble(parsed_news)
