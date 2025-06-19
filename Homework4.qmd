@@ -100,3 +100,98 @@ testMAE3 <- getMAE(resp2,pred)
 ```
 
 ### Question 5
+
+```{r}
+#Create a wrapper function to get either or both metrics returned with a single function call
+wrapper <- function(vector1,vector2,RMSE=TRUE,MAE=TRUE,...){
+  if(is.vector(vector1)==FALSE | is.vector(vector2)==FALSE){
+    stop("One or more inputs are not in vector form")
+  } else{
+    if(RMSE==TRUE && MAE==FALSE){
+      RMSE <- getRMSE(vector1,vector2,...)
+      names(RMSE) <- "RMSE"
+      print(RMSE)
+    }else if(MAE==TRUE && RMSE==FALSE){
+      MAE <- getMAE(vector1,vector2,...)
+      names(MAE) <- "MAE"
+      print(MAE)
+    }else if(MAE==TRUE && RMSE==TRUE){
+      RMSE <- getRMSE(vector1,vector2,...)
+      MAE <- getMAE(vector1,vector2,...)
+      results <- c(RMSE,MAE)
+      names(results) <- c("RMSE","MAE")
+      print(results)
+    }else{print("Specify a metric")}
+  }
+}
+```
+
+### Question 6
+
+```{r}
+#Run code from assignment to create some response values and predictions
+set.seed(10)
+n <- 100
+x <- runif(n)
+resp <- 3 + 10*x + rnorm(n)
+pred <- predict(lm(resp ~ x), data.frame(x))
+
+#Test wrapper function using this data
+#Call once asking for each metric individually-RMSE
+testwrapper1 <- wrapper(resp,pred,RMSE=TRUE,MAE=FALSE)
+
+#Call once asking for each metric indvidually-MAE
+testwrapper2 <- wrapper(resp,pred,RMSE=FALSE,MAE=TRUE)
+
+#Call once specifying both metrics
+testwrapper3 <- wrapper(resp,pred,RMSE=TRUE,MAE=TRUE)
+
+#Replace two of the response values with missing values (NA_real_)
+resp2 <- resp
+resp2[c(1,2)] <- c(NA_real_,NA_real_)
+
+#Test wrapper with specifying behavior to deal with missing values
+testwrapper4 <- wrapper(resp2,pred,na.rm=TRUE)
+
+#Test wrapper without specifying behavior to deal with missing values
+testwrapper5 <- wrapper(resp2,pred)
+
+#Test wrapper by passing it incorrect data
+bad_data_1 <- c(1,2,3)
+bad_data_2 <- c(4,5,6)
+bad_data_frame <- data.frame(bad_data_1,bad_data_2)
+testwrapper6 <- wrapper(bad_data_frame,bad_data_2)
+```
+
+## Task 3: Querying an API and a Tidy-Style Function
+
+### Question 1
+
+```{r}
+#Use GET() from the httr package to return information about protests in the news in the last 30 days.
+news_URL_protests <- "https://newsapi.org/v2/everything?q=protests&from=2025-05-19&sortBy=publishedAt&apiKey=24187cd558dc45b9a6b10d1891bdd396"
+news_protests_return <- httr::GET(news_URL_protests)
+```
+
+### Question 2
+
+```{r}
+#Parse what is returned in question 1 and find the data frame that has the actual article information
+parsed_news_protests <- jsonlite::fromJSON(rawToChar(news_protests_return$content))
+protests <- as_tibble(parsed_news_protests)
+```
+
+### Question 3
+
+```{r}
+#Write a quick function that allows the user to easily query this API. The inputs to the function should be the title/subject to search for (string), a time period to search from (string), and an API key
+API_query <- function(subject,time_period,key){
+  news_URL <- "https://newsapi.org/v2/everything?q="
+  query_URL <- paste0(news_URL,subject,"&from=",time_period,"&sortBy=publishedAt&apiKey=",key)
+  news_return <- httr::GET(query_URL)
+  parsed_news <- jsonlite::fromJSON(rawToChar(news_return$content))
+  news <- as_tibble(parsed_news)
+}
+
+query_test <- API_query("gamestop","2025-05-19","24187cd558dc45b9a6b10d1891bdd396")
+```
