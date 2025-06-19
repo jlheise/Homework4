@@ -5,6 +5,10 @@ format: pdf
 editor: visual
 ---
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+```
+
 ## Task 1: Conceptual Questions
 
 ### Question 1
@@ -30,3 +34,69 @@ You can name a variable sd in a function and not cause any issues with the sd fu
 ## Task 2: Writing R Functions
 
 ### Question 1
+
+```{r}
+#Write getRMSE function
+getRMSE <- function(response_input,prediction_input,...){
+  RMSE <- sqrt(mean((response_input - prediction_input)^2,...))
+}
+```
+
+### Question 2
+
+```{r}
+#Run code from assignment to create some response values and predictions
+set.seed(10)
+n <- 100
+x <- runif(n)
+resp <- 3 + 10*x + rnorm(n)
+pred <- predict(lm(resp ~ x), data.frame(x))
+
+#Test RMSE function using this data
+testRMSE <- getRMSE(resp,pred)
+
+#Replace two of the response values with missing values (NA_real_)
+resp2 <- resp
+resp2[c(1,2)] <- c(NA_real_,NA_real_)
+
+#Test getRMSE with specifying behavior to deal with missing values
+testRMSE2 <- getRMSE(resp2,pred,na.rm=TRUE)
+
+#Test getRMSE without specifying behavior to deal with missing values
+testRMSE3 <- getRMSE(resp2,pred)
+```
+
+### Question 3
+
+```{r}
+#getMAE() function that evaluates predictions using mean absolute deviation
+getMAE <- function(response_input, prediction_input,...){
+  MAE <- sqrt(mean(abs(response_input - prediction_input),...)) 
+}
+```
+
+### Question 4
+
+```{r}
+#Run code from assignment to create some response values and predictions
+set.seed(10)
+n <- 100
+x <- runif(n)
+resp <- 3 + 10*x + rnorm(n)
+pred <- predict(lm(resp ~ x), data.frame(x))
+
+#Test MAE function using this data
+testMAE <- getMAE(resp,pred)
+
+#Replace two of the response values with missing values (NA_real_)
+resp2 <- resp
+resp2[c(1,2)] <- c(NA_real_,NA_real_)
+
+#Test getMAE with specifying behavior to deal with missing values
+testMAE2 <- getMAE(resp2,pred,na.rm=TRUE)
+
+#Test getMAE without specifying behavior to deal with missing values
+testMAE3 <- getMAE(resp2,pred)
+```
+
+### Question 5
